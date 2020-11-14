@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div class="container">
+
+        <div th:text="${#httpServletRequest.getParameter('error')}"
+             th:unless="${#httpServletRequest.getParameter('error') == null and #httpServletRequest.getParameter('error') == 'true'}">
+            Incorrect password or username
+        </div>
+        <form action="/auth" method="post">
+            <div class="row">
+                <div class="col-25">
+                    <label>Login</label>
+                </div>
+                <div class="col-75">
+                    <input class="form-text-field" type="text" name="login" placeholder="Your login..">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-25">
+                    <label>Password</label>
+                </div>
+                <div class="col-75">
+                    <input class="form-text-field" type="password" name="password" placeholder="Your password..">
+                </div>
+            </div>
+            <div class="row">
+                <input class="form-submit" type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+    <script src="js/login.js"></script>
+</body>

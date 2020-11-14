@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="/head"></th:block>
+</head>
+<body>
+
+<th:block th:unless="*{authenticated}" th:include="/navigation/_menu"></th:block>
+<th:block th:if="*{authenticated}" th:include="/navigation/auth_menu"></th:block>
+
+<div id="banner">
+</div>
+
+<div class="about">
+    <div id="contentSection" class="content"></div>
+</div>
+</body>
+<script th:inline="javascript">
+    let banner = '<div class="banner">\n' +
+        '    <div class="counter">\n' +
+        '        <h1>0</h1>\n' +
+        '        <p>Total images uploaded</p>\n' +
+        '    </div>\n' +
+        '</div>';
+    let noBanner = '<div style="height: 50px;"></div>\n';
+</script>
+<script src="js/navigation.js"></script>
+<script src="js/client.js" th:inline="javascript"></script>
+<script th:inline="javascript">
+     updateContent([[${content}]]);
+</script>
+</html>
