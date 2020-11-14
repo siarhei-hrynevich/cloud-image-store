@@ -13,7 +13,7 @@ public class BaseController {
 
     private static final String spaClientName = "client";
 
-    private JwtProvider provider;
+    protected JwtProvider provider;
 
     @Autowired
     public BaseController(JwtProvider provider) {

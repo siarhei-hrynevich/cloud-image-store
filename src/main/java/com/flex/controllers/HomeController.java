@@ -45,7 +45,7 @@ public class HomeController extends BaseController {
 
     @GetMapping("/uploading")
     public String uploading(HttpServletRequest request, Model model) {
-        return getViewByHeader(request, model, "images/search");
+        return getViewByHeader(request, model, "images/uploading");
     }
 
     @GetMapping("/login")
@@ -57,5 +57,4 @@ public class HomeController extends BaseController {
     public String register(HttpServletRequest request, Model model) {
         return getViewByHeader(request, model, "account/register");
     }
-
 }
