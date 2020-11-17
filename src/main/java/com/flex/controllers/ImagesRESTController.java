@@ -63,11 +63,18 @@ public class ImagesRESTController {
         }
     }
 
-    @PostMapping("/last")
+    @GetMapping("/last")
     public ResponseEntity<List<ImageModel>> lastUploadedImages(int count) {
         if(count > 0) {
-            return ResponseEntity.ok().body(dao.getLastImages(count));
+            List<ImageModel> images = dao.getLastImages(count);
+            images.forEach(ImageModel::makeExtendedUrl);
+            return ResponseEntity.ok().body(images);
         }
         return ResponseEntity.badRequest().body(null);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ImageModel> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(dao.findById(id));
     }
 }
