@@ -74,25 +74,40 @@ function updateContentSection(content, status, xhr) {
     let body = document.getElementsByTagName('body').item(0);
     contentSection.appendChild(body);
     processScripts(body.getElementsByTagName('script'));
-    setTimeout(
-        () => {
-            let pageInArray = pages.find((page, i, arr) => {
-                return page.name === contentURL;
-            });
-            if (pageInArray === undefined) {
-                if (currentPage !== undefined) {
-                    let clone = currentPage.clone();
-                    clone.name = contentURL;
-                    pages.push(clone);
-                }
-            } else {
-                currentPage = pageInArray;
-            }
-            currentPage.init()
-        },
-        100);
+    initPage();
+
 }
 
+function savePage() {
+    if (currentPage !== undefined) {
+        let clone = currentPage.clone();
+        clone.name = contentURL;
+        pages.push(clone);
+    }
+}
+
+function initPage() {
+    let pageInArray = pages.find((page, i, arr) => {
+        return page.name === contentURL;
+    });
+
+    if (pageInArray === undefined) {
+        waitPage();
+    } else {
+        currentPage = pageInArray;
+        currentPage.init()
+    }
+}
+
+function waitPage() {
+    if(currentPage === undefined || currentPage.name !== undefined) {
+        setTimeout(waitPage, 50);
+    } else {
+        currentPage.name = contentURL;
+        savePage();
+        currentPage.init();
+    }
+}
 
 function processScripts(scripts) {
     for (let i = 0; i < scripts.length; i++) {
