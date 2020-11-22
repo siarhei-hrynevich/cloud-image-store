@@ -31,9 +31,53 @@
         <a>String username</a>
         <br>
         <a>String password</a>
-
-        <p>If method is authorize required</p>
-        <p>Key: Authorization; Value: Bearer {token}</p>
     </details>
+    <details>
+        <summary>Images</summary>
+        <h1>Search:</h1>
+        <b>URL: http://{host}/api/images/search; Method: GET</b>
+        <br>
+        <b>Args: </b>
+        <br>
+        <a>String name</a>
+        <br>
+
+        <hr>
+
+        <h1>Last N images:</h1>
+        <b>URL: http://{host}/api/images/last; Method: GET</b>
+        <br>
+        <b>Args: </b>
+        <br>
+        <a>int count</a>
+
+        <hr>
+
+        <h1>Get by id:</h1>
+        <b>URL: http://{host}/api/images/{id}; Method: GET; Authorize: required</b>
+
+        <hr>
+
+        <h1>Images of user:</h1>
+        <b>URL: http://{host}/api/images/user/{user_id}; Method: GET</b>
+
+        <h1>Images of current user:</h1>
+        <b>URL: http://{host}/api/images/user/; Method: GET</b>
+
+        <hr>
+
+        <h1>Uploading:</h1>
+        <b>URL: http://{host}/api/images/; Method: POST; Authorize: required</b>
+        <br>
+        <b>Args: </b>
+        <br>
+        <a>String name</a>
+        <br>
+        <a>MultipartFile file</a>
+
+
+    </details>
+    <p>If method is authorize required</p>
+    <p>Key: Authorization; Value: Bearer {token}</p>
 </body>
 </html>

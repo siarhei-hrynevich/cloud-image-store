@@ -75,6 +75,24 @@ public class ImagesRESTController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ImageModel> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(dao.findById(id));
+        ImageModel model = dao.findById(id);
+        model.makeExtendedUrl();
+        return ResponseEntity.ok(model);
     }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<ImageModel>> findByUserId(@PathVariable Long id) {
+        List<ImageModel> models = dao.findByUserId(id);
+        models.stream().forEach(ImageModel::makeExtendedUrl);
+        return ResponseEntity.ok(models);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<ImageModel>> findByCurrentUserId() {
+        ExtendedUserDetails user = (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        List<ImageModel> images = dao.findByUserId(user.getId());
+        images.stream().forEach(ImageModel::makeExtendedUrl);
+        return ResponseEntity.ok(images);
+    }
+
 }

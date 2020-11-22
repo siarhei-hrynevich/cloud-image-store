@@ -48,6 +48,12 @@ public class HomeController extends BaseController {
         return getViewByHeader(request, model, "images/uploading");
     }
 
+    @GetMapping("/account")
+    public String account(HttpServletRequest request, Model model) {
+        model.addAttribute("user", SecurityContextHolder.getContext().getAuthentication().getDetails());
+        return getViewByHeader(request, model, "account/account");
+    }
+
     @GetMapping("/login")
     public String login(HttpServletRequest request, Model model) {
         return getViewByHeader(request, model, "account/loginPage");

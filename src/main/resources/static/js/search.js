@@ -44,28 +44,8 @@ currentPage = {
         currentPage.images = data;
         for (let i = 0; i < data.length; i++) {
             let image = convertImageToDOM(data[i]);
-            image.addEventListener('click', currentPage.onClickImage);
             imagesContainer.appendChild(image);
         }
-    },
-
-    onClickImage: function (e) {
-        let targetSection = document.getElementById('target');
-        targetSection.innerHTML = '';
-        let id = Number(e.toElement.getAttribute('id'));
-        let target = currentPage.images.find((image, index, array) => image.id === id);
-        if (target !== undefined) {
-            let nameElement = document.createElement('span');
-            nameElement.innerText = target.name;
-            targetSection.appendChild(nameElement);
-            targetSection.appendChild(convertImageToDOM(target));
-            let downloadBtn = document.getElementById('download-link');
-            let file = target.name + target.url.substr(target.url.lastIndexOf('.'));
-            downloadBtn.setAttribute('link', target.url);
-            downloadBtn.setAttribute('file', file);
-            currentPage.popUp.show();
-        }
-
     },
 
     init: function () {
@@ -83,7 +63,6 @@ currentPage = {
             initEventHandlers: this.initEventHandlers,
             search: this.search,
             updateImages: this.updateImages,
-            onClickImage: this.onClickImage,
             init: this.init
         }
     }
@@ -94,12 +73,4 @@ function downloadImage(e) {
     let link = element.getAttribute('link');
     let name = element.getAttribute('file');
     saveAs(link, name);
-}
-
-function convertImageToDOM(image) {
-    let imageDOM = document.createElement('img');
-    imageDOM.className = 'image';
-    imageDOM.src = image.url;
-    imageDOM.setAttribute('id', image.id);
-    return imageDOM;
 }

@@ -58,4 +58,10 @@ public class ImageDao extends JdbcDaoSupport {
         return getJdbcTemplate().queryForObject(sql, new ImageMapper(), id);
     }
 
+    public List<ImageModel> findByUserId(long id) {
+        String sql = "SELECT * FROM images WHERE user_id = ?";
+        RowMapper<ImageModel> mapper = new ImageMapper();
+        return getJdbcTemplate().query(sql, mapper, id);
+    }
+
 }
