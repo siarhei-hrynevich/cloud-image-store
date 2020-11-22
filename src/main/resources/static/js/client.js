@@ -26,7 +26,10 @@ let contentURL;
 
 //'multipart/form-data'
 function updateContent(url) {
-    contentURL = url;
+    if(url.charAt(0) === '/')
+        contentURL = url.substring(1);
+    else
+        contentURL = url;
     query(url, null, 'GET', 'text/html', updateContentSection);
 }
 
