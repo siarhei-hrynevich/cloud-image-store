@@ -7,6 +7,7 @@ import com.flex.services.implementation.UserService;
 import com.flex.viewModels.LoginViewModel;
 import com.flex.viewModels.RegisterViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountException;
@@ -34,12 +35,12 @@ public class AccountRESTController {
     }
 
     @PostMapping("/login")
-    public String auth(@ModelAttribute("loginForm") LoginViewModel request) {
+    public ResponseEntity<String> auth(@ModelAttribute("loginForm") LoginViewModel request) {
         try {
             UserModel user = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
-            return jwtProvider.generateToken(user.getLogin());
+            return ResponseEntity.ok(jwtProvider.generateToken(user.getLogin()));
         } catch (AccountException e) {
-            return e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
