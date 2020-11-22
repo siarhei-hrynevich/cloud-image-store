@@ -41,6 +41,7 @@
         <br>
         <a>String name</a>
         <br>
+        <b>Result: Image</b>
 
         <hr>
 
@@ -50,20 +51,27 @@
         <b>Args: </b>
         <br>
         <a>int count</a>
+        <br>
+        <b>Result: Image[]</b>
 
         <hr>
 
         <h1>Get by id:</h1>
         <b>URL: http://{host}/api/images/{id}; Method: GET; Authorize: required</b>
+        <br>
+        <b>Result: Image</b>
 
         <hr>
 
         <h1>Images of user:</h1>
         <b>URL: http://{host}/api/images/user/{user_id}; Method: GET</b>
+        <br>
+        <b>Result: Image[]</b>
 
         <h1>Images of current user:</h1>
         <b>URL: http://{host}/api/images/user/; Method: GET</b>
-
+        <br>
+        <b>Result: Image[]</b>
         <hr>
 
         <h1>Uploading:</h1>
@@ -74,10 +82,32 @@
         <a>String name</a>
         <br>
         <a>MultipartFile file</a>
+        <br>
+        <b>Result: Image</b>
 
 
     </details>
+
+    <details>
+        <summary>Types</summary>
+        <b>Image</b>
+        <br>
+        <a>id: Long</a>
+        <br>
+        <a>user_id: Long</a>
+        <br>
+        <a>name: String</a>
+        <br>
+        <a>url: String</a>
+        <br>
+        <a>width: Int</a>
+        <br>
+        <a>height: Int</a>
+    </details>
+
     <p>If method is authorize required</p>
     <p>Key: Authorization; Value: Bearer {token}</p>
+
+
 </body>
 </html>
