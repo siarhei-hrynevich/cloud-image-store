@@ -51,7 +51,7 @@ public class CloudinaryUploader implements ImageUploader {
 
     private String createImagePublicIdFromUrl(String url) {
         String[] urlPaths = url.split("/");
-        String imagePublicId = createImagePublicId(urlPaths[urlPaths.length - 2], urlPaths[urlPaths.length - 1]);
+        String imagePublicId = createImagePublicId(storage_path, urlPaths[urlPaths.length - 1]);
         return imagePublicId.replaceFirst(".[a-z]+$", "");
     }
 
