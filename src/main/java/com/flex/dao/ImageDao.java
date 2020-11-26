@@ -64,4 +64,9 @@ public class ImageDao extends JdbcDaoSupport {
         return getJdbcTemplate().query(sql, mapper, id);
     }
 
+    public void deleteImage(ImageModel model) {
+        String deleteQuery = "DELETE FROM images WHERE id = ?";
+        getJdbcTemplate().update(deleteQuery, model.getId());
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.flex.services.implementation;
 
 import com.flex.dao.ImageDao;
+import com.flex.exeptions.ImageNotFoundException;
 import com.flex.models.ExtendedUserDetails;
 import com.flex.models.ImageModel;
 import com.flex.services.ImageUploadingService;
@@ -28,6 +29,12 @@ public class ImageUploadingServiceImplementation implements ImageUploadingServic
         model = imageDao.create(model);
         model.makeExtendedUrl();
         return model;
+    }
+
+    @Override
+    public void deleteImage(ImageModel model) throws IOException, ImageNotFoundException {
+        uploader.deleteImage(model);
+        imageDao.deleteImage(model);
     }
 
 }

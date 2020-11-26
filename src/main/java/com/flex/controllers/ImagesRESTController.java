@@ -3,11 +3,13 @@ package com.flex.controllers;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.flex.dao.ImageDao;
+import com.flex.exeptions.ImageNotFoundException;
 import com.flex.models.ExtendedUserDetails;
 import com.flex.models.ImageModel;
 import com.flex.services.ImageUploadingService;
 import com.flex.viewModels.ImageUploadingViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -68,7 +70,7 @@ public class ImagesRESTController {
 
     @GetMapping("/last")
     public ResponseEntity<List<ImageModel>> lastUploadedImages(int count) {
-        if(count > 0) {
+        if (count > 0) {
             List<ImageModel> images = dao.getLastImages(count);
             images.forEach(ImageModel::makeExtendedUrl);
             return ResponseEntity.ok().body(images);
@@ -81,6 +83,28 @@ public class ImagesRESTController {
         ImageModel model = dao.findById(id);
         model.makeExtendedUrl();
         return ResponseEntity.ok(model);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteImage(@PathVariable Long id) {
+        ImageModel model = dao.findById(id);
+        ExtendedUserDetails user = (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        if (model == null)
+            return ResponseEntity.notFound().build();
+        if (!model.getUserID().equals(user.getId()))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        return deleteValidImage(model);
+    }
+
+    private ResponseEntity deleteValidImage(ImageModel model) {
+        try {
+            service.deleteImage(model);
+            return ResponseEntity.ok().build();
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (ImageNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/user/{id}")

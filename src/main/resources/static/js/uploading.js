@@ -27,32 +27,3 @@ function upload(file, name) {
         headers: getHeaders()
     });
 }
-
-// function dragenter(e) {
-//     e.stopPropagation();
-//     e.preventDefault();
-// }
-//
-// function dragover(e) {
-//     e.stopPropagation();
-//     e.preventDefault();
-// }
-//
-// function drop(e) {
-//     e.stopPropagation();
-//     e.preventDefault();
-//
-//     var dt = e.dataTransfer;
-//     var files = dt.files;
-//     upload(files);
-// }
-//
-// let dropbox = document.querySelector('.dropbox');
-//
-// document.querySelector('.upload-btn').addEventListener('click', ()=>{
-//     upload(dropbox.files);
-// });
-//
-// dropbox.addEventListener("dragenter", dragenter, false);
-// dropbox.addEventListener("dragover", dragover, false);
-// dropbox.addEventListener("drop", drop, false);
