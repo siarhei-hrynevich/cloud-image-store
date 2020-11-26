@@ -7,6 +7,10 @@ currentPage = {
         },
         hide: function () {
             closeModal(document.getElementById('image-modal'));
+        },
+        init: function () {
+            document.querySelector('[data-close-button]').addEventListener('click', currentPage.popUp.hide);
+            document.getElementById('download-link').addEventListener('click', downloadImage);
         }
     },
 
@@ -49,6 +53,7 @@ currentPage = {
     },
 
     init: function () {
+        this.popUp.init();
         this.popUp.hide();
         document.querySelector('[data-close-button]').addEventListener('click', this.popUp.hide);
         document.getElementById('download-link').addEventListener('click', downloadImage);
@@ -66,11 +71,4 @@ currentPage = {
             init: this.init
         }
     }
-}
-
-function downloadImage(e) {
-    let element = e.toElement;
-    let link = element.getAttribute('link');
-    let name = element.getAttribute('file');
-    saveAs(link, name);
 }

@@ -33,10 +33,17 @@ function updateContent(url) {
     query(url, null, 'GET', 'text/html', updateContentSection);
 }
 
-function query(url, data, method, contentType, onSuccess) {
+function getHeaders() {
     let token = getCookie('jwt');
     if (token === undefined)
         token = '';
+    return {
+        "partial": "true",
+        "Authorization": "Bearer " + token
+    };
+}
+
+function query(url, data, method, contentType, onSuccess) {
     $.ajax({
         url: url,
         data: data,
@@ -45,10 +52,7 @@ function query(url, data, method, contentType, onSuccess) {
         contentType: contentType,
         type: method,
         success: onSuccess,
-        headers: {
-            "partial": "true",
-            "Authorization": "Bearer " + token
-        }
+        headers: getHeaders()
     });
 }
 

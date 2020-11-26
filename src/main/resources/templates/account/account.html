@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div class="container">
+    <div class="modal" id="image-modal">
+        <div class="modal-header">
+            <div class="title">Image</div>
+            <button data-close-button class="close-button">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="target"></div>
+            <button id="download-link">Download</button>
+        </div>
+    </div>
+    <span class="user-name">Name:</span><p class="user-name" th:text="${user.username}"></p>
+    <p id="user-name"></p>
+    <a href="/uploading" data-link="ajax">Upload images</a>
+    <p>Your images:</p>
+    <div id="images"></div>
+</div>
+<div id="overlay"></div>
+
+<script src="/js/dist/FileSaver.js"></script>
+<script src="/js/utils/popup.js"></script>
+<script src="/js/utils/imageUtils.js"></script>
+<script src="/js/account.js"></script>
+</html>

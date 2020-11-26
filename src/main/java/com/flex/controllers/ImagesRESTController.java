@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -52,7 +53,9 @@ public class ImagesRESTController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ImageModel> uploadImage(ImageUploadingViewModel image) {
+    @Secured("ROLE_CREATOR,ROLE_ADMIN,ROLE_USER")
+    public ResponseEntity<ImageModel> uploadImage(ImageUploadingViewModel image, HttpServletRequest request) {
+        String contentType = request.getHeader("Content-Type");
         Object user = SecurityContextHolder.getContext().getAuthentication().getDetails();
         try {
             ImageModel model = service.uploadImage(image, (ExtendedUserDetails) user);

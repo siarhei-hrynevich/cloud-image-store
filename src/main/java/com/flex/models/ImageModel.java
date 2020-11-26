@@ -1,6 +1,9 @@
 package com.flex.models;
 
 
+import com.flex.viewModels.ImageUploadingViewModel;
+import org.springframework.web.multipart.MultipartFile;
+
 public class ImageModel {
 
     private static final String commonUrlPath = System.getenv("commonImagesUrlPath");
@@ -12,8 +15,7 @@ public class ImageModel {
     private Integer width;
     private Integer height;
 
-    public ImageModel() {
-    }
+    public ImageModel() {}
 
     public ImageModel(Long id, Long userID, String name, String url, Integer width, Integer height) {
         this.id = id;

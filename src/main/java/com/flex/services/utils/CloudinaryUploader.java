@@ -22,10 +22,13 @@ public class CloudinaryUploader implements ImageUploader {
     @Value("${spring.application.cloudinary_api_secret}")
     private String api_secret;
 
+    @Value("${spring.application.storage_path}")
+    private String storage_path;
+
     @Override
     public ImageModel upload(ImageUploadingViewModel image) throws IOException {
 
-        String name = String.format("storage/%s", RandomStringUtils.randomAlphanumeric(32));
+        String name = String.format("%s/%s", storage_path, RandomStringUtils.randomAlphanumeric(32));
         return createFromResultMap(
                 uploadImage(image.getFile().getBytes(), name));
     }
