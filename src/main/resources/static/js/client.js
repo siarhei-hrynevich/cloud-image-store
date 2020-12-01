@@ -65,6 +65,11 @@ function getCookie(name) {
 
 function showBanner() {
     bannerSection.innerHTML = banner;
+    query('/api/images/totalImagesCount', null, 'GET', 'text', updateCount);
+}
+
+function updateCount(data) {
+    document.getElementById('counter').innerHTML = String(data);
 }
 
 function hideBanner() {

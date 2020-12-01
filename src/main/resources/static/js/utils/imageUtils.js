@@ -4,6 +4,8 @@ function convertImageToDOM(image) {
     if(window.location.href.includes('https'))
         if(!window.location.href.includes('https'))
             imageDOM.src = image.url.replace('http', 'https');
+        else
+            imageDOM.src = image.url;
     else
         imageDOM.src = image.url;
     imageDOM.addEventListener('click', onClickImage);
@@ -23,10 +25,12 @@ function onClickImage(e) {
         nameElement.innerText = name;
         targetSection.appendChild(nameElement);
         targetSection.appendChild(convertImageToDOM({name:name,url:url,id:imageDOM.id}));
-        let downloadBtn = document.getElementById('download-link');
+        let buttons = targetSection.getElementsByTagName('button');
         let file = name + url.substr(url.lastIndexOf('.'));
-        downloadBtn.setAttribute('link', url);
-        downloadBtn.setAttribute('file', file);
+        for (let i = 0; i < buttons.length; i++) {
+            buttons.item(i).setAttribute('link', url);
+            buttons.item(i).setAttribute('file', file);
+        }
         currentPage.popUp.show();
     }
 }

@@ -69,4 +69,9 @@ public class ImageDao extends JdbcDaoSupport {
         getJdbcTemplate().update(deleteQuery, model.getId());
     }
 
+    public Long count() {
+        String query = "SELECT COUNT(id) FROM images";
+        return getJdbcTemplate().queryForObject(query, Long.class);
+    }
+
 }

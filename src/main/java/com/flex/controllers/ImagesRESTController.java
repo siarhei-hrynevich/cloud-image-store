@@ -122,4 +122,10 @@ public class ImagesRESTController {
         return ResponseEntity.ok(images);
     }
 
+    @GetMapping("/totalImagesCount")
+    public ResponseEntity<Long> count() {
+        return ResponseEntity.ok(dao.count());
+
+    }
+
 }
