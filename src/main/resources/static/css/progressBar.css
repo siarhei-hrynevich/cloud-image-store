@@ -20,3 +20,10 @@ p {
 .hide {
     display: none;
 }
+
+.file-upload-icon {
+    position: absolute;
+    top: 500px;
+    height: 30%;
+    left: 35%;
+}

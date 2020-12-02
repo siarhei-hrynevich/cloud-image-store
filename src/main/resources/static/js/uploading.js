@@ -4,13 +4,23 @@ currentPage = {
     init: function () {
         hideBanner();
         hideProgress();
-        document.querySelector('.upload-btn').onclick = (e) => {
+        document.getElementById('upload-button').onclick = (e) => {
             upload(document.getElementById('file'), document.getElementById('name'));
-        }
+        };
+        document.getElementById('file').addEventListener('change', onFileChanged);
     },
     clone: function () {
         return { init: this.init }
     }
+}
+
+function onFileChanged(e) {
+    let reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById('image-preview').src = e.target.result;
+    };
+    reader.readAsDataURL(e.currentTarget.files[0]);
+
 }
 
 function upload(file, name) {
