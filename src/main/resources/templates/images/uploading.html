@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <div>
-    <input type="file" id="file" class="dropbox"/>
+    <input type="file" id="file" multiple accept="image/*" class="dropbox"/>
     <input type="text" id="name" class="form-text-field"/>
     <button type="submit" class="upload-btn">Upload</button>
+
+    <div class="progress-bar-container">
+        <div id="progressBar" class="bar">
+            <span id="progressBarText"></span>
+        </div>
+    </div>
+
     <script src="/js/uploading.js"></script>
 </div>
