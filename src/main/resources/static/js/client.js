@@ -84,7 +84,7 @@ function updateContentSection(content, status, xhr) {
     contentSection.appendChild(body);
     processScripts(body.getElementsByTagName('script'));
     initPage();
-
+    cancelBtn.onclick();
 }
 
 function savePage() {

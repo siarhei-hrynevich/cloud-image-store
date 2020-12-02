@@ -1,14 +1,10 @@
 package com.flex.controllers;
 
 import com.flex.config.jwt.JwtProvider;
-import com.flex.models.ExtendedUserDetails;
-import org.springframework.beans.ExtendedBeanInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -46,12 +42,6 @@ public class HomeController extends BaseController {
     @GetMapping("/uploading")
     public String uploading(HttpServletRequest request, Model model) {
         return getViewByHeader(request, model, "images/uploading");
-    }
-
-    @GetMapping("/account")
-    public String account(HttpServletRequest request, Model model) {
-        model.addAttribute("user", SecurityContextHolder.getContext().getAuthentication().getDetails());
-        return getViewByHeader(request, model, "account/account");
     }
 
     @GetMapping("/login")

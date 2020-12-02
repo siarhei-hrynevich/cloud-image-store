@@ -1,8 +1,8 @@
 function convertImageToDOM(image) {
     let imageDOM = document.createElement('img');
     imageDOM.className = 'image';
-    if(window.location.href.includes('https'))
-        if(!window.location.href.includes('https'))
+    if (window.location.href.includes('https'))
+        if (!image.url.includes('https'))
             imageDOM.src = image.url.replace('http', 'https');
         else
             imageDOM.src = image.url;
@@ -24,7 +24,9 @@ function onClickImage(e) {
         let url = imageDOM.getAttribute('src');
         nameElement.innerText = name;
         targetSection.appendChild(nameElement);
-        targetSection.appendChild(convertImageToDOM({name:name,url:url,id:imageDOM.id}));
+        let image = {name: name, url: url, id: Number(imageDOM.id)};
+        currentPage.targetImage = image;
+        targetSection.appendChild(convertImageToDOM(image));
         let buttons = targetSection.getElementsByTagName('button');
         let file = name + url.substr(url.lastIndexOf('.'));
         for (let i = 0; i < buttons.length; i++) {
