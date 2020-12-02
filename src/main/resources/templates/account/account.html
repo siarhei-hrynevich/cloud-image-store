@@ -8,14 +8,16 @@
         </div>
         <div class="modal-body">
             <div id="target"></div>
-            <button id="download-link">Download</button>
+            <button id="download-link" class="form-submit left">Download</button>
+            
+            <button id="delete-link" class="form-submit right">Delete</button>
         </div>
     </div>
     <span class="user-name">Name:</span><p class="user-name" th:text="${user.username}"></p>
     <p id="user-name"></p>
-    <a href="/uploading" data-link="ajax">Upload images</a>
+    <a href="/uploading" data-link="ajax" class="center-button">Upload images</a>
     <p>Your images:</p>
-    <div id="images"></div>
+    <div id="images" class="images"></div>
 </div>
 <div id="overlay"></div>
 

@@ -11,6 +11,9 @@ currentPage = {
         init: function () {
             document.querySelector('[data-close-button]').addEventListener('click', currentPage.popUp.hide);
             document.getElementById('download-link').addEventListener('click', downloadImage);
+            let deleteButton = document.getElementById('delete-link');
+            if(deleteButton !== undefined)
+                deleteButton.addEventListener('click', onDeleteClick);
         }
     },
     images: [],
@@ -23,6 +26,7 @@ currentPage = {
     onLoadImages: function (data) {
         currentPage.images = data;
         let imageSection = document.getElementById('images');
+        imageSection.innerHTML = '';
         for (let i = 0; i < data.length; i++) {
             imageSection.appendChild(convertImageToDOM(data[i]));
         }
@@ -36,4 +40,14 @@ currentPage = {
             clone: this.clone
         }
     }
+}
+
+function onDeleteClick() {
+    let id = currentPage.targetImage.id;
+    query('/api/images/' + id, null, 'DELETE', 'text', onDeleteSuccess);
+}
+function onDeleteSuccess(data) {
+    currentPage.images = currentPage.images.filter(item => { return item.id !== currentPage.targetImage.id; });
+    currentPage.onLoadImages(currentPage.images);
+    currentPage.popUp.hide();
 }
