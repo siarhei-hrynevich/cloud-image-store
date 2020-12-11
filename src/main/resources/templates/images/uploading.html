@@ -2,13 +2,19 @@
 <div>
     <input type="text" placeholder="Name" id="name" class="form-text-field"/>
     <button type="submit" id="upload-button" class="form-submit right">Upload</button>
+    <input placeholder="Tags"
+           type="text"
+           class="small-text-field"
+           id="tags">
+    <span style="font-weight: lighter">(Write tags separated by spaces)</span>
+
     <div class="image-upload">
         <label for="file">
             <img id="image-preview" class="image" src="https://static.thenounproject.com/png/49665-200.png"/>
         </label>
         <input type="file" id="file" style="display: none;" multiple accept="image/*" class="dropbox"/>
     </div>
-    <span style="font-weight: lighter">(Click to image to select other)</span>
+    <span style="font-weight: lighter">(Click on image to select other)</span>
     <div class="progress-bar-container">
         <div id="progressBar" class="bar">
             <span id="progressBarText"></span>

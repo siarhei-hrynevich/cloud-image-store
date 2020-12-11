@@ -39,7 +39,12 @@ currentPage = {
     },
 
     search: function (desiredValue) {
-        query("/api/images/search?name=" + desiredValue, null, 'GET', 'text', this.updateImages);
+        let tag = document.getElementById('tag').value;
+        if(tag === '')
+            query("/api/images/search?name=" + desiredValue, null, 'GET', 'text', this.updateImages);
+        else
+            query("/api/images/tag_search?name=" + desiredValue + '&tag=' + tag, null, 'GET', 'text', this.updateImages);
+
     },
 
     updateImages: function (data) {

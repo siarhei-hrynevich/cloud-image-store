@@ -5,7 +5,7 @@ currentPage = {
         hideBanner();
         hideProgress();
         document.getElementById('upload-button').onclick = (e) => {
-            upload(document.getElementById('file'), document.getElementById('name'));
+            upload(document.getElementById('file'), document.getElementById('name'), document.getElementById('tags'));
         };
         document.getElementById('file').addEventListener('change', onFileChanged);
     },
@@ -23,12 +23,17 @@ function onFileChanged(e) {
 
 }
 
-function upload(file, name) {
+function upload(file, name, tags) {
     if(file.files.length === 0)
         return;
+
+    let tagsArray = tags.value.split(' ');
+    tagsArray.filter((item, index, array) => item === '');
+
     let formData = new FormData();
     formData.append('file', file.files[0]);
     formData.append('name', name.value);
+    formData.append('tags', tagsArray);
     $.ajax({
         url: 'api/images/',
         data: formData,
