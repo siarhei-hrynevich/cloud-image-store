@@ -4,12 +4,16 @@ import com.flex.config.jwt.JwtProvider;
 import com.flex.exeptions.UserAlreadyExistException;
 import com.flex.models.ExtendedUserDetails;
 import com.flex.models.UserModel;
+import com.flex.services.implementation.UserDetailsServiceImplementation;
 import com.flex.services.implementation.UserService;
 import com.flex.viewModels.LoginViewModel;
 import com.flex.viewModels.RegisterViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,11 +25,15 @@ import javax.security.auth.login.AccountException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
 
 @Controller
 public class AccountController extends BaseController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserDetailsServiceImplementation userDetailsService;
 
     public AccountController(JwtProvider provider) {
         super(provider);
@@ -60,16 +68,25 @@ public class AccountController extends BaseController {
     @GetMapping("/account")
     public String account(HttpServletRequest request, Model model) {
         model.addAttribute("showDeleteButton", true);
+        model.addAttribute("showUploadButton", true);
         model.addAttribute("user", SecurityContextHolder.getContext().getAuthentication().getDetails());
         return getViewByHeader(request, model, "account/account");
     }
 
-    @GetMapping("/account/{id}")
-    public String accountOfUser(HttpServletRequest request, Model model, @PathVariable Long id) {
-        ExtendedUserDetails details = (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        if(details.getAuthorities().contains("ROLE_ADMIN") || details.getId().equals(id))
-            model.addAttribute("showDeleteButton", true);
-        model.addAttribute("user", details);
+    @GetMapping("/user-account")
+    public String accountOfUser(HttpServletRequest request, Model model, Long id) {
+        try {
+            ExtendedUserDetails details = (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+            Collection<GrantedAuthority> auth = details.getAuthorities();
+            auth.stream().filter(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            if(auth.size() > 0 || details.getId().equals(id))
+                model.addAttribute("showDeleteButton", true);
+            ExtendedUserDetails user = (ExtendedUserDetails) userDetailsService.loadUserById(id);
+            model.addAttribute("user", user);
+            model.addAttribute("showUploadButton", user.getId().equals(details.getId()));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return getViewByHeader(request, model, "account/account");
     }
 

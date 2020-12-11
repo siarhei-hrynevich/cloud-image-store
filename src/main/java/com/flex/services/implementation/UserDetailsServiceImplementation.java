@@ -31,9 +31,20 @@ public class UserDetailsServiceImplementation implements UserDetailsService {
             System.out.println("User not found! " + userName);
             throw new UsernameNotFoundException("User " + userName + " was not found in the database");
         }
+        return createDetails(appUser);
+    }
 
-        List<String> roleNames = this.appRoleDAO.getUserRoleNames(appUser.getId());
-        return new ExtendedUserDetails(appUser.getId(), appUser.getName(), //
-                appUser.getEncryptedPassword(), roleNames);
+    public UserDetails loadUserById(Long id) {
+        UserModel user = appUserDAO.findUserAccountById(id);
+        return createDetails(user);
+    }
+
+    private ExtendedUserDetails createDetails(UserModel model) {
+        if(model == null)
+            return null;
+        List<String> roleNames = this.appRoleDAO.getUserRoleNames(model.getId());
+        return new ExtendedUserDetails(model.getId(), model.getName(), //
+                model.getEncryptedPassword(), roleNames);
+
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Optional;
 
 public class BaseController {
@@ -46,7 +48,11 @@ public class BaseController {
     }
 
     protected void setContent(HttpServletRequest request, Model model) {
-        String path = request.getServletPath();
+        String path = request.getServletPath() + '?';
+        for (Iterator<String> it = request.getParameterNames().asIterator(); it.hasNext(); ) {
+            String param = it.next();
+            path += String.format("%s=%s&", param, request.getParameter(param));
+        }
         model.addAttribute("content", path.substring(1));
     }
 
