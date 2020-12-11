@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Random;
 
 @Service
 public class ImageUploadingServiceImplementation implements ImageUploadingService {
@@ -26,7 +27,12 @@ public class ImageUploadingServiceImplementation implements ImageUploadingServic
         ImageModel model = uploader.upload(image);
         model.setName(image.getName());
         model.setUserID(user.getId());
-        model = imageDao.create(model);
+        model.setTags(image.getTags());
+        try {
+            model = imageDao.create(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         model.makeExtendedUrl();
         return model;
     }
@@ -34,7 +40,11 @@ public class ImageUploadingServiceImplementation implements ImageUploadingServic
     @Override
     public void deleteImage(ImageModel model) throws IOException, ImageNotFoundException {
         uploader.deleteImage(model);
-        imageDao.deleteImage(model);
+        try {
+            imageDao.deleteImage(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

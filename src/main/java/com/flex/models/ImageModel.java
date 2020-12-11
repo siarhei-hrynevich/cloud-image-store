@@ -1,8 +1,6 @@
 package com.flex.models;
 
-
-import com.flex.viewModels.ImageUploadingViewModel;
-import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
 public class ImageModel {
 
@@ -14,17 +12,9 @@ public class ImageModel {
     private String url;
     private Integer width;
     private Integer height;
+    private List<String> tags;
 
     public ImageModel() {}
-
-    public ImageModel(Long id, Long userID, String name, String url, Integer width, Integer height) {
-        this.id = id;
-        this.name = name;
-        this.url = url;
-        this.width = width;
-        this.height = height;
-        this.user_ID = userID;
-    }
 
     public String getUrl() {
         return url;
@@ -84,4 +74,11 @@ public class ImageModel {
         }
     }
 
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
 }

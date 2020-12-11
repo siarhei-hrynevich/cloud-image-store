@@ -41,12 +41,6 @@ public class ImagesRESTController {
         this.dao = dao;
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        ExtendedUserDetails user = (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        return ResponseEntity.ok("User id: " + user.getId());
-    }
-
     @GetMapping("/search")
     public ResponseEntity<List<ImageModel>> search(String name) {
         List<ImageModel> images = dao.findByName(name);
@@ -54,13 +48,18 @@ public class ImagesRESTController {
         return ResponseEntity.ok(images);
     }
 
+    @GetMapping("/tag_search")
+    public ResponseEntity<List<ImageModel>> searchImagesWithTag(String name, String tag) {
+        List<ImageModel> images = dao.findByNameWithTag(name, tag);
+        images.forEach(ImageModel::makeExtendedUrl);
+        return ResponseEntity.ok(images);
+    }
+
     @PostMapping("/")
-    @Secured("ROLE_CREATOR,ROLE_ADMIN,ROLE_USER")
+    @Secured("ROLE_ADMIN,ROLE_USER")
     public ResponseEntity<ImageModel> uploadImage(ImageUploadingViewModel image, HttpServletRequest request) {
-        String contentType = request.getHeader("Content-Type");
-        Object user = SecurityContextHolder.getContext().getAuthentication().getDetails();
         try {
-            ImageModel model = service.uploadImage(image, (ExtendedUserDetails) user);
+            ImageModel model = service.uploadImage(image, getCurrentUser());
             return ResponseEntity.ok().body(model);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -86,9 +85,10 @@ public class ImagesRESTController {
     }
 
     @DeleteMapping("/{id}")
+    @Secured("ROLE_ADMIN,ROLE_USER")
     public ResponseEntity deleteImage(@PathVariable Long id) {
         ImageModel model = dao.findById(id);
-        ExtendedUserDetails user = (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        ExtendedUserDetails user = getCurrentUser();
         if (model == null)
             return ResponseEntity.notFound().build();
         if (!model.getUserID().equals(user.getId()))
@@ -128,4 +128,11 @@ public class ImagesRESTController {
 
     }
 
+    private ExtendedUserDetails getCurrentUser() {
+        try {
+            return (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
