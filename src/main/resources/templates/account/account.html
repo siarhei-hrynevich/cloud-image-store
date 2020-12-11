@@ -15,8 +15,8 @@
     </div>
     <span class="user-name">Name:</span><p class="user-name" th:text="${user.username}"></p>
     <p id="user-name"></p>
-    <a href="/uploading" data-link="ajax" class="center-button">Upload images</a>
-    <p>Your images:</p>
+    <a th:if="*{showUploadButton}" href="/uploading" data-link="ajax" class="center-button">Upload images</a>
+    <p>Uploaded images:</p>
     <div id="images" class="images"></div>
 </div>
 <div id="overlay"></div>

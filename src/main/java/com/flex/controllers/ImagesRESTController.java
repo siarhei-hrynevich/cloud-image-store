@@ -88,12 +88,16 @@ public class ImagesRESTController {
     @Secured("ROLE_ADMIN,ROLE_USER")
     public ResponseEntity deleteImage(@PathVariable Long id) {
         ImageModel model = dao.findById(id);
-        ExtendedUserDetails user = getCurrentUser();
-        if (model == null)
+        if (model == null) {
             return ResponseEntity.notFound().build();
-        if (!model.getUserID().equals(user.getId()))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        return deleteValidImage(model);
+        }
+        ExtendedUserDetails user = getCurrentUser();
+        assert user != null;
+        user.getAuthorities().stream().filter(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        if (model.getUserID().equals(user.getId()) || user.getAuthorities().size() > 0) {
+            return deleteValidImage(model);
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     private ResponseEntity deleteValidImage(ImageModel model) {

@@ -21,7 +21,11 @@ currentPage = {
         this.popUp.init();
         this.popUp.hide();
         hideBanner();
-        query('api/images/user/', null, 'GET', 'text', this.onLoadImages)
+        const urlParams = new URLSearchParams(window.location.search);
+        let id = urlParams.get('id');
+        if(id === null)
+            id = "";
+        query('api/images/user/' + id, null, 'GET', 'text', this.onLoadImages)
     },
     onLoadImages: function (data) {
         currentPage.images = data;

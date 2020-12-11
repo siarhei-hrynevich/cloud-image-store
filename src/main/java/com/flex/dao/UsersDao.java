@@ -35,4 +35,13 @@ public class UsersDao extends JdbcDaoSupport {
             return null;
         }
     }
+
+    public UserModel findUserAccountById(Long id) {
+        String sql = "SELECT * FROM users WHERE id = ?;";
+        try {
+            return this.getJdbcTemplate().queryForObject(sql, new UsersMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
 }
