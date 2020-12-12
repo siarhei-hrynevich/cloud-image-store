@@ -16,6 +16,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.sql.DataSource;
@@ -43,6 +45,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // And Setting PasswordEncoder
         auth.userDetailsService(userDetailsService).passwordEncoder(PasswordEncrypt.passwordEncoder());
 
+    }
+
+    @Profile("heroku")
+    public PasswordEncoder getEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Override
