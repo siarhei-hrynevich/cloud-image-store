@@ -49,8 +49,9 @@ public class BaseController {
 
     protected void setContent(HttpServletRequest request, Model model) {
         String path = request.getServletPath() + '?';
-        for (Iterator<String> it = request.getParameterNames().asIterator(); it.hasNext(); ) {
-            String param = it.next();
+        Enumeration<String> paramsNames = request.getParameterNames();
+        for (; paramsNames.hasMoreElements(); ) {
+            String param = paramsNames.nextElement();
             path += String.format("%s=%s&", param, request.getParameter(param));
         }
         model.addAttribute("content", path.substring(1));
