@@ -50,7 +50,7 @@ currentPage = {
     updateImages: function (data) {
         let imagesContainer = document.querySelector('.images');
         imagesContainer.innerHTML = '';
-        currentPage.images = data;
+        currentPage.images = data.sort((image1, image2) => image2.downloads - image1.downloads);;
         for (let i = 0; i < data.length; i++) {
             let image = convertImageToDOM(data[i]);
             imagesContainer.appendChild(image);

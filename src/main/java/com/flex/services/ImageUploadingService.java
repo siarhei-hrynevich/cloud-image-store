@@ -4,6 +4,7 @@ import com.flex.exeptions.ImageNotFoundException;
 import com.flex.models.ExtendedUserDetails;
 import com.flex.models.ImageModel;
 import com.flex.viewModels.ImageUploadingViewModel;
+import com.flex.viewModels.ImageViewModel;
 
 import java.io.IOException;
 
@@ -16,7 +17,7 @@ public interface ImageUploadingService {
      * @param user
      * @return image model with URLs.
      */
-    ImageModel uploadImage(ImageUploadingViewModel image, ExtendedUserDetails user) throws IOException;
+    ImageViewModel uploadImage(ImageUploadingViewModel image, ExtendedUserDetails user) throws IOException;
 
-    void deleteImage(ImageModel model) throws IOException, ImageNotFoundException;
+    void deleteImage(ImageViewModel model) throws IOException, ImageNotFoundException;
 }

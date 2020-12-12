@@ -17,7 +17,9 @@ function closeModal(modal) {
 
 function downloadImage(e) {
     let element = e.toElement;
-    let link = element.getAttribute('link');
     let name = element.getAttribute('file');
-    saveAs(link, name);
+    query('api/images/download-link/' + element.getAttribute('image-id'), null, 'GET', 'text',
+        (data)=>{
+            saveAs(data, name);
+        });
 }

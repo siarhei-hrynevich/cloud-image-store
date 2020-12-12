@@ -1,8 +1,10 @@
-package com.flex.models;
+package com.flex.viewModels;
+
+import com.flex.models.ImageModel;
 
 import java.util.List;
 
-public class ImageModel {
+public class ImageViewModel {
 
     private static final String commonUrlPath = System.getenv("commonImagesUrlPath");
 
@@ -10,13 +12,23 @@ public class ImageModel {
     private Long user_ID;
     private String name;
     private String url;
-    private String smallUrl;
     private Integer width;
     private Integer height;
     private List<String> tags;
     private Long downloads;
 
-    public ImageModel() {}
+    public ImageViewModel() {}
+
+    public ImageViewModel(ImageModel model) {
+        id = model.getId();
+        user_ID = model.getUserID();
+        name = model.getName();
+        url = model.getSmallUrl();
+        width = model.getWidth();
+        height = model.getHeight();
+        tags = model.getTags();
+        downloads = model.getDownloads();
+    }
 
     public String getUrl() {
         return url;
@@ -68,13 +80,11 @@ public class ImageModel {
 
     public void makeShortUrl() {
         url = url.replace(commonUrlPath, "");
-        smallUrl = smallUrl.replace(commonUrlPath, "");
     }
 
     public void makeExtendedUrl() {
         if(!url.contains(commonUrlPath)) {
             url = commonUrlPath + url;
-            smallUrl = commonUrlPath + smallUrl;
         }
     }
 
@@ -86,12 +96,17 @@ public class ImageModel {
         this.tags = tags;
     }
 
-    public String getSmallUrl() {
-        return smallUrl;
-    }
-
-    public void setSmallUrl(String smallUrl) {
-        this.smallUrl = smallUrl;
+    public ImageModel toModel() {
+        ImageModel model = new ImageModel();
+        model.setSmallUrl(url);
+        model.setTags(tags);
+        model.setHeight(height);
+        model.setWidth(width);
+        model.setId(id);
+        model.setUserID(user_ID);
+        model.setName(name);
+        model.setDownloads(downloads);
+        return model;
     }
 
     public Long getDownloads() {

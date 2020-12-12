@@ -97,7 +97,7 @@ function savePage() {
 
 function initPage() {
     let pageInArray = pages.find((page, i, arr) => {
-        return page.name === contentURL;
+        return page.name.includes(contentURL) || contentURL.includes(page.name);
     });
 
     if (pageInArray === undefined) {

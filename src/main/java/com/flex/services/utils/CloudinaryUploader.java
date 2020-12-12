@@ -1,6 +1,7 @@
 package com.flex.services.utils;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import com.flex.exeptions.ImageNotFoundException;
 import com.flex.models.ImageModel;
@@ -30,8 +31,12 @@ public class CloudinaryUploader implements ImageUploader {
     public ImageModel upload(ImageUploadingViewModel image) throws IOException {
 
         String name = createImagePublicId(storage_path, RandomStringUtils.randomAlphanumeric(32));
-        return createFromResultMap(
+        ImageModel model = createFromResultMap(
                 uploadImage(image.getFile().getBytes(), name));
+        Map result = uploadImage(image.getFile().getBytes(),
+                createImagePublicId(storage_path + "/small", RandomStringUtils.randomAlphanumeric(32)));
+        model.setSmallUrl((String) result.get("url"));
+        return model;
     }
 
     @Override
@@ -72,6 +77,18 @@ public class CloudinaryUploader implements ImageUploader {
         Map imageUploadConfig = ObjectUtils.asMap(
                 "public_id", name,
                 "resource_type", "image"
+        );
+        Cloudinary cloudinary = new Cloudinary(config());
+        return cloudinary.uploader().upload(bytes, imageUploadConfig);
+    }
+
+    private Map uploadImageWithSize(byte[] bytes, String name, int width, int height) throws IOException {
+
+        Map imageUploadConfig = ObjectUtils.asMap(
+                "public_id", name,
+                "resource_type", "image",
+                "width", String.valueOf(width / 2),
+                "height", String.valueOf(height / 2)
         );
         Cloudinary cloudinary = new Cloudinary(config());
         return cloudinary.uploader().upload(bytes, imageUploadConfig);

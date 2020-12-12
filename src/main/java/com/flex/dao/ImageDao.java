@@ -1,7 +1,9 @@
 package com.flex.dao;
 
 import com.flex.dao.mappers.ImageMapper;
+import com.flex.dao.mappers.ImageViewModelMapper;
 import com.flex.models.ImageModel;
+import com.flex.viewModels.ImageViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,6 +24,17 @@ public class ImageDao extends JdbcDaoSupport {
         this.setDataSource(dataSource);
     }
 
+
+    public String getDownloadLink(Long id) {
+        String query = "SELECT url FROM images WHERE id = ?";
+        return getJdbcTemplate().queryForObject(query, String.class, id);
+    }
+
+    public void incrementDownloadsOfImage(Long id) {
+        String query = "UPDATE images SET downloads = downloads + 1 WHERE id = ?";
+        getJdbcTemplate().update(query, id);
+    }
+
     public ImageModel create(ImageModel model) {
         if (model == null)
             return null;
@@ -35,45 +48,48 @@ public class ImageDao extends JdbcDaoSupport {
         return model;
     }
 
-    public List<ImageModel> findByName(String name) {
+    public List<ImageViewModel> findByName(String name) {
         String sql = "SELECT * FROM images WHERE name LIKE ?;";
-        RowMapper<ImageModel> mapper = new ImageMapper();
+        RowMapper<ImageViewModel> mapper = new ImageViewModelMapper();
         String nameForQuery = String.format("%%%s%%", name);
-        return getJdbcTemplate().query(sql, mapper, nameForQuery);
+        List<ImageViewModel> models = getJdbcTemplate().query(sql, mapper, nameForQuery);
+        models.forEach(m -> m.setTags(selectTags(m.getId())));
+        return models;
     }
 
-    public List<ImageModel> findByNameWithTag(String name, String tag) {
+    public List<ImageViewModel> findByNameWithTag(String name, String tag) {
         String query =
                 "WITH tagged_images_ids AS (WITH selected_tags AS (SELECT id FROM tags WHERE text LIKE ?) " +
                         "SELECT image_id FROM image_tags it INNER JOIN selected_tags st ON it.tag_id = st.id) " +
                         "SELECT * FROM images imgs INNER JOIN tagged_images_ids tg_ids ON tg_ids.image_id = imgs.id WHERE name LIKE ?";
         String nameForQuery = String.format("%%%s%%", name);
         String tagForQuery = String.format("%%%s%%", tag);
-        List<ImageModel> models = getJdbcTemplate().query(query, new ImageMapper(), tagForQuery, nameForQuery);
+        List<ImageViewModel> models = getJdbcTemplate().query(query, new ImageViewModelMapper(), tagForQuery, nameForQuery);
         models.forEach(m -> m.setTags(selectTags(m.getId())));
         return models;
     }
 
-    public List<ImageModel> getLastImages(int count) {
+    public List<ImageViewModel> getLastImages(int count) {
         String sql = "SELECT * FROM images LIMIT ?;";
-        RowMapper<ImageModel> mapper = new ImageMapper();
-        List<ImageModel> models = getJdbcTemplate().query(sql, mapper, count);
+        RowMapper<ImageViewModel> mapper = new ImageViewModelMapper();
+        List<ImageViewModel> models = getJdbcTemplate().query(sql, mapper, count);
         models.forEach(m -> m.setTags(selectTags(m.getId())));
-        return models; }
+        return models;
+    }
+
+    public List<ImageViewModel> findByUserId(long id) {
+        String sql = "SELECT * FROM images WHERE user_id = ?";
+        RowMapper<ImageViewModel> mapper = new ImageViewModelMapper();
+        List<ImageViewModel> models = getJdbcTemplate().query(sql, mapper, id);
+        models.forEach(m -> m.setTags(selectTags(m.getId())));
+        return models;
+    }
 
     public ImageModel findById(long id) {
         String sql = "SELECT * FROM images WHERE id = ?";
         ImageModel model = getJdbcTemplate().queryForObject(sql, new ImageMapper(), id);
         model.setTags(selectTags(model.getId()));
         return model;
-    }
-
-    public List<ImageModel> findByUserId(long id) {
-        String sql = "SELECT * FROM images WHERE user_id = ?";
-        RowMapper<ImageModel> mapper = new ImageMapper();
-        List<ImageModel> models = getJdbcTemplate().query(sql, mapper, id);
-        models.forEach(m -> m.setTags(selectTags(m.getId())));
-        return models;
     }
 
     public void deleteImage(ImageModel model) {
@@ -91,14 +107,15 @@ public class ImageDao extends JdbcDaoSupport {
     private void insertImage(ImageModel model) {
 
         String sql = "INSERT INTO images " +
-                "(name, user_id, width, height, url) " +
-                "VALUES (?,?,?,?,?);";
+                "(name, user_id, width, height, url, small_url) " +
+                "VALUES (?,?,?,?,?,?);";
         Object[] params = new Object[]{
                 model.getName(),
                 model.getUserID(),
                 model.getWidth(),
                 model.getHeight(),
-                model.getUrl()
+                model.getUrl(),
+                model.getSmallUrl()
         };
         getJdbcTemplate().update(sql, params);
         if(model.getTags() != null)

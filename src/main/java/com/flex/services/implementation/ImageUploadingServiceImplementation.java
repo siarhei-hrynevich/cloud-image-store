@@ -7,6 +7,7 @@ import com.flex.models.ImageModel;
 import com.flex.services.ImageUploadingService;
 import com.flex.services.utils.ImageUploader;
 import com.flex.viewModels.ImageUploadingViewModel;
+import com.flex.viewModels.ImageViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class ImageUploadingServiceImplementation implements ImageUploadingServic
     ImageUploader uploader;
 
     @Override
-    public ImageModel uploadImage(ImageUploadingViewModel image, ExtendedUserDetails user) throws IOException {
+    public ImageViewModel uploadImage(ImageUploadingViewModel image, ExtendedUserDetails user) throws IOException {
         ImageModel model = uploader.upload(image);
         model.setName(image.getName());
         model.setUserID(user.getId());
@@ -35,14 +36,15 @@ public class ImageUploadingServiceImplementation implements ImageUploadingServic
             e.printStackTrace();
         }
         model.makeExtendedUrl();
-        return model;
+        return new ImageViewModel(model);
     }
 
     @Override
-    public void deleteImage(ImageModel model) throws IOException, ImageNotFoundException {
-        uploader.deleteImage(model);
+    public void deleteImage(ImageViewModel model) throws IOException, ImageNotFoundException {
+        ImageModel image = model.toModel();
+        uploader.deleteImage(image);
         try {
-            imageDao.deleteImage(model);
+            imageDao.deleteImage(image);
         } catch (Exception e) {
             e.printStackTrace();
         }

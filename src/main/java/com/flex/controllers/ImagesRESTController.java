@@ -8,6 +8,7 @@ import com.flex.models.ExtendedUserDetails;
 import com.flex.models.ImageModel;
 import com.flex.services.ImageUploadingService;
 import com.flex.viewModels.ImageUploadingViewModel;
+import com.flex.viewModels.ImageViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,24 +43,31 @@ public class ImagesRESTController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ImageModel>> search(String name) {
-        List<ImageModel> images = dao.findByName(name);
-        images.forEach(ImageModel::makeExtendedUrl);
+    public ResponseEntity<List<ImageViewModel>> search(String name) {
+        List<ImageViewModel> images = dao.findByName(name);
+        images.forEach(ImageViewModel::makeExtendedUrl);
         return ResponseEntity.ok(images);
     }
 
     @GetMapping("/tag_search")
-    public ResponseEntity<List<ImageModel>> searchImagesWithTag(String name, String tag) {
-        List<ImageModel> images = dao.findByNameWithTag(name, tag);
-        images.forEach(ImageModel::makeExtendedUrl);
+    public ResponseEntity<List<ImageViewModel>> searchImagesWithTag(String name, String tag) {
+        List<ImageViewModel> images = dao.findByNameWithTag(name, tag);
+        images.forEach(ImageViewModel::makeExtendedUrl);
         return ResponseEntity.ok(images);
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<ImageViewModel>> findByUserId(@PathVariable Long id) {
+        List<ImageViewModel> models = dao.findByUserId(id);
+        models.stream().forEach(ImageViewModel::makeExtendedUrl);
+        return ResponseEntity.ok(models);
     }
 
     @PostMapping("/")
     @Secured("ROLE_ADMIN,ROLE_USER")
-    public ResponseEntity<ImageModel> uploadImage(ImageUploadingViewModel image, HttpServletRequest request) {
+    public ResponseEntity<ImageViewModel> uploadImage(ImageUploadingViewModel image, HttpServletRequest request) {
         try {
-            ImageModel model = service.uploadImage(image, getCurrentUser());
+            ImageViewModel model = service.uploadImage(image, getCurrentUser());
             return ResponseEntity.ok().body(model);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -68,18 +76,18 @@ public class ImagesRESTController {
     }
 
     @GetMapping("/last")
-    public ResponseEntity<List<ImageModel>> lastUploadedImages(int count) {
+    public ResponseEntity<List<ImageViewModel>> lastUploadedImages(int count) {
         if (count > 0) {
-            List<ImageModel> images = dao.getLastImages(count);
-            images.forEach(ImageModel::makeExtendedUrl);
+            List<ImageViewModel> images = dao.getLastImages(count);
+            images.forEach(ImageViewModel::makeExtendedUrl);
             return ResponseEntity.ok().body(images);
         }
         return ResponseEntity.badRequest().body(null);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ImageModel> findById(@PathVariable Long id) {
-        ImageModel model = dao.findById(id);
+    public ResponseEntity<ImageViewModel> findById(@PathVariable Long id) {
+        ImageViewModel model = new ImageViewModel(dao.findById(id));
         model.makeExtendedUrl();
         return ResponseEntity.ok(model);
     }
@@ -87,7 +95,7 @@ public class ImagesRESTController {
     @DeleteMapping("/{id}")
     @Secured("ROLE_ADMIN,ROLE_USER")
     public ResponseEntity deleteImage(@PathVariable Long id) {
-        ImageModel model = dao.findById(id);
+        ImageViewModel model = new ImageViewModel(dao.findById(id));
         if (model == null) {
             return ResponseEntity.notFound().build();
         }
@@ -100,7 +108,7 @@ public class ImagesRESTController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    private ResponseEntity deleteValidImage(ImageModel model) {
+    private ResponseEntity deleteValidImage(ImageViewModel model) {
         try {
             service.deleteImage(model);
             return ResponseEntity.ok().build();
@@ -111,18 +119,11 @@ public class ImagesRESTController {
         }
     }
 
-    @GetMapping("/user/{id}")
-    public ResponseEntity<List<ImageModel>> findByUserId(@PathVariable Long id) {
-        List<ImageModel> models = dao.findByUserId(id);
-        models.stream().forEach(ImageModel::makeExtendedUrl);
-        return ResponseEntity.ok(models);
-    }
-
     @GetMapping("/user")
-    public ResponseEntity<List<ImageModel>> findByCurrentUserId() {
+    public ResponseEntity<List<ImageViewModel>> findByCurrentUserId() {
         ExtendedUserDetails user = (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        List<ImageModel> images = dao.findByUserId(user.getId());
-        images.stream().forEach(ImageModel::makeExtendedUrl);
+        List<ImageViewModel> images = dao.findByUserId(user.getId());
+        images.stream().forEach(ImageViewModel::makeExtendedUrl);
         return ResponseEntity.ok(images);
     }
 
@@ -130,6 +131,14 @@ public class ImagesRESTController {
     public ResponseEntity<Long> count() {
         return ResponseEntity.ok(dao.count());
 
+    }
+
+    @GetMapping("/download-link/{id}")
+    public ResponseEntity<String> getDownloadLink(@PathVariable Long id) {
+        ImageModel model = dao.findById(id);
+        model.makeExtendedUrl();
+        dao.incrementDownloadsOfImage(id);
+        return ResponseEntity.ok(model.getUrl());
     }
 
     private ExtendedUserDetails getCurrentUser() {
