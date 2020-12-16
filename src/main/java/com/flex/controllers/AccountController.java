@@ -77,13 +77,14 @@ public class AccountController extends BaseController {
     public String accountOfUser(HttpServletRequest request, Model model, Long id) {
         try {
             ExtendedUserDetails details = (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-            Collection<GrantedAuthority> auth = details.getAuthorities();
-            auth.stream().filter(a -> a.getAuthority().equals("ROLE_ADMIN"));
-            if(auth.size() > 0 || details.getId().equals(id))
-                model.addAttribute("showDeleteButton", true);
             ExtendedUserDetails user = (ExtendedUserDetails) userDetailsService.loadUserById(id);
+
+            boolean canUpload = user.getId().equals(details.getId());
+            boolean canDelete =  hasRole(details, "ROLE_ADMIN") || canUpload;
+
+            model.addAttribute("showUploadButton", canUpload);
+            model.addAttribute("showDeleteButton", canDelete);
             model.addAttribute("user", user);
-            model.addAttribute("showUploadButton", user.getId().equals(details.getId()));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

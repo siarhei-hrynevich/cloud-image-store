@@ -1,15 +1,15 @@
 package com.flex.controllers;
 
 import com.flex.config.jwt.JwtProvider;
+import com.flex.models.ExtendedUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Optional;
+import java.util.*;
 
 public class BaseController {
 
@@ -63,5 +63,10 @@ public class BaseController {
             return Optional.empty();
         return Arrays.stream(cookies).
                 filter(item -> item.getName().equals("jwt")).findFirst();
+    }
+
+    public static boolean hasRole(ExtendedUserDetails details, String role) {
+        Collection<GrantedAuthority> auth = details.getAuthorities();
+        return auth.contains(new SimpleGrantedAuthority(role));
     }
 }

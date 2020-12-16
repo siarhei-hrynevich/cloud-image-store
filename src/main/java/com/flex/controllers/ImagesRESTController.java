@@ -101,8 +101,7 @@ public class ImagesRESTController {
         }
         ExtendedUserDetails user = getCurrentUser();
         assert user != null;
-        user.getAuthorities().stream().filter(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-        if (model.getUserID().equals(user.getId()) || user.getAuthorities().size() > 0) {
+        if (model.getUserID().equals(user.getId()) || BaseController.hasRole(user, "ROLE_ADMIN")) {
             return deleteValidImage(model);
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

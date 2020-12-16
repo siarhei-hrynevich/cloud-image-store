@@ -16,7 +16,7 @@
             </div>
 
             <button id="download-link" class="form-submit left">Download</button>
-            <button id="delete-link" class="form-submit right">Delete</button>
+            <button th:if="*{showDeleteButton}" id="delete-link" class="form-submit right">Delete</button>
         </div>
     </div>
     <span class="user-name">Name:</span><p class="user-name" th:text="${user.username}"></p>

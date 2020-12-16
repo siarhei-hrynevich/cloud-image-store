@@ -12,7 +12,7 @@ currentPage = {
             document.querySelector('[data-close-button]').addEventListener('click', currentPage.popUp.hide);
             document.getElementById('download-link').addEventListener('click', downloadImage);
             let deleteButton = document.getElementById('delete-link');
-            if(deleteButton !== undefined)
+            if(deleteButton !== undefined && deleteButton !== null)
                 deleteButton.addEventListener('click', onDeleteClick);
         }
     },
