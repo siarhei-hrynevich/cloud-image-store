@@ -36,6 +36,7 @@ public class ImageUploadingServiceImplementation implements ImageUploadingServic
         try {
             model = imageDao.create(model);
         } catch (Exception e) {
+            deleteUnloadedImage(model);
             e.printStackTrace();
         }
         model.makeExtendedUrl();
@@ -52,5 +53,11 @@ public class ImageUploadingServiceImplementation implements ImageUploadingServic
             e.printStackTrace();
         }
     }
-
+    private void deleteUnloadedImage(ImageModel model) {
+        try {
+            uploader.deleteImage(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
