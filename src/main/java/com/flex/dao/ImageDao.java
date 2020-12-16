@@ -61,7 +61,7 @@ public class ImageDao extends JdbcDaoSupport {
         String query =
                 "WITH tagged_images_ids AS (WITH selected_tags AS (SELECT id FROM tags WHERE text LIKE ?) " +
                         "SELECT image_id FROM image_tags it INNER JOIN selected_tags st ON it.tag_id = st.id) " +
-                        "SELECT * FROM images imgs INNER JOIN tagged_images_ids tg_ids ON tg_ids.image_id = imgs.id WHERE name LIKE ?";
+                        "SELECT DISTINCT * FROM images imgs INNER JOIN tagged_images_ids tg_ids ON tg_ids.image_id = imgs.id WHERE name LIKE ?";
         String nameForQuery = String.format("%%%s%%", name);
         String tagForQuery = String.format("%%%s%%", tag);
         List<ImageViewModel> models = getJdbcTemplate().query(query, new ImageViewModelMapper(), tagForQuery, nameForQuery);
