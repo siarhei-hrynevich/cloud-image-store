@@ -141,6 +141,11 @@ public class ImagesRESTController {
         return ResponseEntity.ok(model.getUrl());
     }
 
+    @GetMapping("/tags")
+    public ResponseEntity<List<String>> getAllTags() {
+        return ResponseEntity.ok(dao.getAllTags());
+    }
+
     private ExtendedUserDetails getCurrentUser() {
         try {
             return (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();

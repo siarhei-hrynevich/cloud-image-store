@@ -25,6 +25,11 @@ public class ImageDao extends JdbcDaoSupport {
     }
 
 
+    public List<String> getAllTags() {
+        String query = "SELECT text FROM tags;";
+        return getJdbcTemplate().queryForList(query, String.class);
+    }
+
     public String getDownloadLink(Long id) {
         String query = "SELECT url FROM images WHERE id = ?";
         return getJdbcTemplate().queryForObject(query, String.class, id);
