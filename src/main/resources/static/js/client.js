@@ -150,5 +150,15 @@ function popState(e) {
     updateContent(url);
 }
 
+function changeProtocol(url) {
+    if (window.location.href.includes('https'))
+        if (!url.includes('https'))
+            return url.replace('http', 'https');
+        else
+            return url;
+    else
+        return url;
+}
+
 $('body').on('click', 'a[data-link="ajax"]', navigate);
 window.onpopstate = popState;

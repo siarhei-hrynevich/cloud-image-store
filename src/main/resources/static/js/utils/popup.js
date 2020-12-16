@@ -20,6 +20,6 @@ function downloadImage(e) {
     let name = element.getAttribute('file');
     query('api/images/download-link/' + element.getAttribute('image-id'), null, 'GET', 'text',
         (data)=>{
-            saveAs(data, name);
+            saveAs(changeProtocol(data), name);
         });
 }

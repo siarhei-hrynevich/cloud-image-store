@@ -2,13 +2,7 @@
 function convertImageToDOM(image) {
     let imageDOM = document.createElement('img');
     imageDOM.className = 'image';
-    if (window.location.href.includes('https'))
-        if (!image.url.includes('https'))
-            imageDOM.src = image.url.replace('http', 'https');
-        else
-            imageDOM.src = image.url;
-    else
-        imageDOM.src = image.url;
+    imageDOM.src = changeProtocol(image.url);
     imageDOM.addEventListener('click', onClickImage);
     imageDOM.setAttribute('id', image.id);
     imageDOM.setAttribute('name', image.name);
