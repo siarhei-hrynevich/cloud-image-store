@@ -29,7 +29,10 @@ public class ImageUploadingServiceImplementation implements ImageUploadingServic
         model.setName(image.getName());
         model.setUserID(user.getId());
         model.setTags(image.getTags());
-        model.getTags().stream().filter(item -> !item.equals(""));
+        model.setDownloads((long) 0);
+        if(model.getTags() != null) {
+            model.getTags().stream().filter(item -> !item.equals(""));
+        }
         try {
             model = imageDao.create(model);
         } catch (Exception e) {
