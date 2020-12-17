@@ -78,13 +78,12 @@ public class AccountController extends BaseController {
     @GetMapping("/user-account")
     public String accountOfUser(HttpServletRequest request, Model model, Long id) {
         try {
-            //Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
             ExtendedUserDetails user = (ExtendedUserDetails) userDetailsService.loadUserById(id);
             ExtendedUserDetails details = getCurrentUser();
 
             boolean canUpload = false;
             boolean canDelete = false;
-            if(details != null && hasRole(details, "ROLE_ADMIN")) {//authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            if(details != null && hasRole(details, "ROLE_ADMIN")) {
                 canUpload = user.getId().equals(details.getId());
                 canDelete =  true;
             }
@@ -96,15 +95,6 @@ public class AccountController extends BaseController {
             System.out.println(e.getMessage());
         }
         return getViewByHeader(request, model, "account/account");
-    }
-
-    private ExtendedUserDetails getCurrentUser() {
-        try {
-            return  (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @GetMapping("/out")

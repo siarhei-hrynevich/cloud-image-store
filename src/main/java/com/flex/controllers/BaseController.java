@@ -5,6 +5,7 @@ import com.flex.models.ExtendedUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.Cookie;
@@ -69,4 +70,14 @@ public class BaseController {
         Collection<GrantedAuthority> auth = details.getAuthorities();
         return auth.contains(new SimpleGrantedAuthority(role));
     }
+
+    public static ExtendedUserDetails getCurrentUser() {
+        try {
+            return (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

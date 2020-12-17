@@ -45,7 +45,7 @@ public class ImageUploadingServiceImplementation implements ImageUploadingServic
 
     @Override
     public void deleteImage(ImageViewModel model) throws IOException, ImageNotFoundException {
-        ImageModel image = model.toModel();
+        ImageModel image = imageDao.findById(model.getId());
         uploader.deleteImage(image);
         try {
             imageDao.deleteImage(image);

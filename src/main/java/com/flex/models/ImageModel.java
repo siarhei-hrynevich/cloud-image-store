@@ -16,7 +16,7 @@ public class ImageModel {
     private List<String> tags;
     private Long downloads;
 
-    public ImageModel() {}
+    public ImageModel() { url = ""; }
 
     public String getUrl() {
         return url;

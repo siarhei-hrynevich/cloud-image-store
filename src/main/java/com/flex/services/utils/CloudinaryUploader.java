@@ -43,21 +43,22 @@ public class CloudinaryUploader implements ImageUploader {
     public void deleteImage(ImageModel model) throws IOException, ImageNotFoundException {
         model.makeShortUrl();
         String imagePublicId = createImagePublicIdFromUrl(model.getUrl());
-        Map result = deleteImageWithId(imagePublicId);
+        String smallImagePublicId = createImagePublicIdFromUrl(model.getSmallUrl());
+        deleteImageWithId(imagePublicId);
+        deleteImageWithId(smallImagePublicId);
+    }
+
+    private void deleteImageWithId(String imagePublicId) throws IOException, ImageNotFoundException {
+        Cloudinary cloudinary = new Cloudinary(config());
+        Map result = cloudinary.uploader().destroy(imagePublicId, ObjectUtils.emptyMap());
         if (!result.get("result").equals("ok")) {
             throw new ImageNotFoundException(imagePublicId);
         }
     }
 
-    private Map deleteImageWithId(String imagePublicId) throws IOException {
-        Cloudinary cloudinary = new Cloudinary(config());
-        return cloudinary.uploader().destroy(imagePublicId, ObjectUtils.emptyMap());
-    }
-
     private String createImagePublicIdFromUrl(String url) {
-        String[] urlPaths = url.split("/");
-        String imagePublicId = createImagePublicId(storage_path, urlPaths[urlPaths.length - 1]);
-        return imagePublicId.replaceFirst(".[a-z]+$", "");
+        String temp = url.replaceFirst(".[a-z]+$", "");
+        return temp.replaceFirst("\\w+/", "");
     }
 
     private String createImagePublicId(String directory, String name) {

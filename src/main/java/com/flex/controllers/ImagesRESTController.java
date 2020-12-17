@@ -67,7 +67,7 @@ public class ImagesRESTController {
     @Secured("ROLE_ADMIN,ROLE_USER")
     public ResponseEntity<ImageViewModel> uploadImage(ImageUploadingViewModel image, HttpServletRequest request) {
         try {
-            ImageViewModel model = service.uploadImage(image, getCurrentUser());
+            ImageViewModel model = service.uploadImage(image, BaseController.getCurrentUser());
             return ResponseEntity.ok().body(model);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -99,7 +99,7 @@ public class ImagesRESTController {
         if (model == null) {
             return ResponseEntity.notFound().build();
         }
-        ExtendedUserDetails user = getCurrentUser();
+        ExtendedUserDetails user = BaseController.getCurrentUser();
         assert user != null;
         if (model.getUserID().equals(user.getId()) || BaseController.hasRole(user, "ROLE_ADMIN")) {
             return deleteValidImage(model);
@@ -145,11 +145,4 @@ public class ImagesRESTController {
         return ResponseEntity.ok(dao.getAllTags());
     }
 
-    private ExtendedUserDetails getCurrentUser() {
-        try {
-            return (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        } catch (Exception e) {
-            return null;
-        }
-    }
 }
