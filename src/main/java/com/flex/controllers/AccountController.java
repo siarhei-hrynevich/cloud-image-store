@@ -11,7 +11,9 @@ import com.flex.viewModels.RegisterViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
@@ -76,11 +78,16 @@ public class AccountController extends BaseController {
     @GetMapping("/user-account")
     public String accountOfUser(HttpServletRequest request, Model model, Long id) {
         try {
-            ExtendedUserDetails details = (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+            //Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
             ExtendedUserDetails user = (ExtendedUserDetails) userDetailsService.loadUserById(id);
+            ExtendedUserDetails details = getCurrentUser();
 
-            boolean canUpload = user.getId().equals(details.getId());
-            boolean canDelete =  hasRole(details, "ROLE_ADMIN") || canUpload;
+            boolean canUpload = false;
+            boolean canDelete = false;
+            if(details != null && hasRole(details, "ROLE_ADMIN")) {//authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+                canUpload = user.getId().equals(details.getId());
+                canDelete =  true;
+            }
 
             model.addAttribute("showUploadButton", canUpload);
             model.addAttribute("showDeleteButton", canDelete);
@@ -91,6 +98,14 @@ public class AccountController extends BaseController {
         return getViewByHeader(request, model, "account/account");
     }
 
+    private ExtendedUserDetails getCurrentUser() {
+        try {
+            return  (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @GetMapping("/out")
     public String logout(HttpServletResponse response) {
